@@ -927,6 +927,7 @@ namespace Facebook.Unity
                 }
             }
 
+            [ObsoleteAttribute("This method UpdateUserProperties is deprecated.", false)]
             public static void UpdateUserProperties(Dictionary<string, string> parameters)
             {
                 Mobile.MobileFacebookImpl.UpdateUserProperties(parameters);
@@ -962,6 +963,14 @@ namespace Facebook.Unity
 
                     return impl;
                 }
+            }
+
+            /// <summary>
+            /// Call this function so that Profile will be automatically updated based on the changes to the access token.
+            /// </summary> 
+            public static void EnableProfileUpdatesOnAccessTokenChange(bool enable)
+            {
+                Mobile.MobileFacebookImpl.EnableProfileUpdatesOnAccessTokenChange(enable);
             }
 
             /// <summary>

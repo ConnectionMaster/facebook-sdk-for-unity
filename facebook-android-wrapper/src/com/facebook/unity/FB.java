@@ -944,10 +944,143 @@ public class FB {
         }
 
         try {
-            JSONObject parameters = (new JSONObject()).put("score", score);
-            GameFeaturesLibrary.postSessionScore(
+            GameFeaturesLibrary.postSessionScoreAsync(
                 getUnityActivity().getApplicationContext(),
-                parameters,
+                score,
+                createDaemonCallback(unityMessage)
+            );
+
+        } catch(JSONException e) {
+            unityMessage.sendError(e.getMessage());
+        }
+    }
+
+    @UnityCallable
+    public static void PostTournamentScore(String params_str) {
+        UnityParams unityParams = UnityParams.parse(params_str);
+        final UnityMessage unityMessage = new UnityMessage("OnPostTournamentScoreComplete");
+        if (unityParams.hasString("callback_id")) {
+            unityMessage.put("callback_id", unityParams.getString("callback_id"));
+        }
+
+        int score;
+        try {
+            score = Integer.parseInt(unityParams.getString("score"));
+        } catch(NumberFormatException e) {
+            unityMessage.sendError(String.format("Invalid score: %s", e.getMessage()));
+            return;
+        }
+
+        try {
+            GameFeaturesLibrary.postTournamentScoreAsync(
+                getUnityActivity().getApplicationContext(),
+                score,
+                createDaemonCallback(unityMessage)
+            );
+
+        } catch(JSONException e) {
+            unityMessage.sendError(e.getMessage());
+        }
+    }
+
+    @UnityCallable
+    public static void GetTournament(String params_str) {
+        UnityParams unityParams = UnityParams.parse(params_str);
+        final UnityMessage unityMessage = new UnityMessage("OnGetTournamentComplete");
+        if (unityParams.hasString("callback_id")) {
+            unityMessage.put("callback_id", unityParams.getString("callback_id"));
+        }
+
+        GameFeaturesLibrary.getTournamentAsync(
+            getUnityActivity().getApplicationContext(),
+            createDaemonCallback(unityMessage)
+        );
+    }
+
+
+    @UnityCallable
+    public static void ShareTournament(String params_str) {
+        UnityParams unityParams = UnityParams.parse(params_str);
+        final UnityMessage unityMessage = new UnityMessage("OnShareTournamentComplete");
+        if (unityParams.hasString("callback_id")) {
+            unityMessage.put("callback_id", unityParams.getString("callback_id"));
+        }
+
+        int score;
+        try {
+            score = Integer.parseInt(unityParams.getString("score"));
+        } catch(NumberFormatException e) {
+            unityMessage.sendError(String.format("Invalid score: %s", e.getMessage()));
+            return;
+        }
+
+        JSONObject data = new JSONObject();
+        Bundle dataBundle = unityParams.getParamsObject("data").getStringParams();
+        Set<String> keys = dataBundle.keySet();
+        for (String key : keys) {
+            try {
+                data.put(key, dataBundle.get(key));
+            } catch(JSONException e) {
+                unityMessage.sendError(String.format("Invalid data payload: %s", e.getMessage()));
+            }
+        }       
+
+
+        try {
+            GameFeaturesLibrary.shareTournamentAsync(
+                getUnityActivity().getApplicationContext(),
+                score,
+                data,
+                createDaemonCallback(unityMessage)
+            );
+
+        } catch(JSONException e) {
+            unityMessage.sendError(e.getMessage());
+        }
+    }
+
+    @UnityCallable
+    public static void CreateTournament(String params_str) {
+        UnityParams unityParams = UnityParams.parse(params_str);
+        final UnityMessage unityMessage = new UnityMessage("OnCreateTournamentComplete");
+        if (unityParams.hasString("callback_id")) {
+            unityMessage.put("callback_id", unityParams.getString("callback_id"));
+        }
+
+        int initialScore;
+        try {
+            initialScore = Integer.parseInt(unityParams.getString("initialScore"));
+        } catch(NumberFormatException e) {
+            unityMessage.sendError(String.format("Invalid initialScore: %s", e.getMessage()));
+            return;
+        }
+
+        String title = unityParams.getString("title");
+        String image = unityParams.getString("imageBase64DataUrl");
+        String sortOrder = unityParams.getString("sortOrder");
+        String scoreFormat = unityParams.getString("scoreFormat");
+
+        Bundle dataBundle = unityParams.getParamsObject("data").getStringParams();
+        JSONObject data = new JSONObject();
+        Set<String> keys = dataBundle.keySet();
+        for (String key : keys) {
+            try {
+                data.put(key, dataBundle.get(key));
+            } catch(JSONException e) {
+                unityMessage.sendError(String.format("Invalid data payload: %s", e.getMessage()));
+            }
+        }     
+
+        try {
+            GameFeaturesLibrary.createTournamentAsync(
+                getUnityActivity().getApplicationContext(),
+                initialScore,
+                title,
+                image,
+                sortOrder,
+                scoreFormat,
+                null, // endTime
+                data,
                 createDaemonCallback(unityMessage)
             );
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
@@ -20,21 +20,12 @@
 
 namespace Facebook.Unity
 {
+    using System.Collections.Generic;
+
     /// <summary>
-    /// Facebook sdk version.
+    /// The instant tournament result.
     /// </summary>
-    public class FacebookSdkVersion
+    public interface ITournamentResult : IResult
     {
-        /// <summary>
-        /// Gets the SDK build version.
-        /// </summary>
-        /// <value>The sdk version.</value>
-        public static string Build
-        {
-            get
-            {
-                return "11.0.0";
-            }
-        }
     }
 }
